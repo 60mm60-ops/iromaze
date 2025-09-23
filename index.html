@@ -193,7 +193,7 @@
             font-weight: bold;
         }
 
-        .mix-button {
+        .mix-button, .gem-button {
             background: linear-gradient(45deg, #FFC1E3, #A8D8F8);
             color: white;
             border: none;
@@ -204,15 +204,15 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            margin: 0 20px;
+            margin: 0 10px; /* Adjust margin for two buttons */
         }
 
-        .mix-button:hover {
+        .mix-button:hover, .gem-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 30px rgba(0,0,0,0.3);
         }
 
-        .mix-button:disabled {
+        .mix-button:disabled, .gem-button:disabled {
             background: #ccc;
             cursor: not-allowed;
             transform: none;
@@ -250,6 +250,39 @@
             font-size: 0.8em;
             color: #333;
             font-weight: bold;
+        }
+
+        .gem {
+            border-radius: 10px; /* Change shape to a rectangle with rounded corners */
+            transform: rotate(45deg); /* Rotate for a diamond-like shape */
+            box-shadow: 
+                0 0 10px 5px rgba(255, 255, 255, 0.7), /* White glow */
+                0 0 20px 10px rgba(255, 255, 255, 0.5), /* Fainter white glow */
+                0 0 40px 20px rgba(255, 255, 255, 0.3); /* Even fainter glow */
+            border: 8px solid transparent;
+            background: 
+                linear-gradient(45deg, rgba(255, 255, 255, 0.5), transparent),
+                linear-gradient(-45deg, rgba(255, 255, 255, 0.3), transparent),
+                var(--gem-color, #f0f0f0);
+            position: relative;
+        }
+        
+        .gem::before, .gem::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+        }
+        
+        .gem::before {
+            background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3));
+        }
+
+        .gem::after {
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3));
         }
 
         .clear-button {
@@ -326,7 +359,7 @@
                 font-size: 1.2em;
             }
 
-            .result-color {
+            .result-color, .gem {
                 width: 150px;
                 height: 150px;
             }
@@ -343,6 +376,12 @@
             .controls {
                 flex-direction: column;
                 align-items: center;
+            }
+
+            .mix-button, .gem-button {
+                padding: 15px 25px;
+                font-size: 1.5em;
+                margin: 5px 0;
             }
         }
     </style>
@@ -387,6 +426,9 @@
                 <button class="mix-button" id="mixButton" onclick="mixColors()" disabled>
                     いろをまぜる ✨
                 </button>
+                <button class="gem-button" id="gemButton" onclick="createGem()" disabled>
+                    ほうせきにする 💎
+                </button>
             </div>
 
             <div class="result-area">
@@ -407,9 +449,9 @@
     <script>
         let selectedColors = [];
         let maxColorsToMix = 4;
-        let extraColorsShown = false;
+        let mixedColorHex = null; // Store the last mixed color
+        let isGem = false;
 
-        // すべての色データ（12色）
         const allColors = [
             { name: 'red', hex: '#FF6B6B', text: 'あか' },
             { name: 'yellow', hex: '#FFD700', text: 'きいろ' },
@@ -425,9 +467,7 @@
             { name: 'black', hex: '#000000', text: 'くろ' }
         ];
 
-        // 色混ぜの結果（複数色対応）
         const colorResults = {
-            // 単色
             'red': { color: '#FF6B6B', name: 'あか', object: 'りんご' },
             'yellow': { color: '#FFD700', name: 'きいろ', object: 'ひまわり' },
             'blue': { color: '#4169E1', name: 'あお', object: 'うみ' },
@@ -441,8 +481,6 @@
             'gray': { color: '#808080', name: 'はいいろ', object: 'ねずみ' },
             'lime': { color: '#32FF32', name: 'きみどり', object: 'メロン' },
             'lightblue': { color: '#87CEEB', name: 'みずいろ', object: 'そら' },
-
-            // 2色の組み合わせ
             'red+yellow': { color: '#FF8C00', name: 'オレンジ', object: 'たいよう' },
             'red+blue': { color: '#9932CC', name: 'むらさき', object: 'ぶどう' },
             'yellow+blue': { color: '#32CD32', name: 'みどり', object: 'はっぱ' },
@@ -462,8 +500,6 @@
             'yellow+green': { color: '#ADFF2F', name: 'きみどり', object: 'きゅうり' },
             'blue+purple': { color: '#4B0082', name: 'ふかむらさき', object: 'なす' },
             'orange+black': { color: '#8B4513', name: 'こげちゃ', object: 'チョコレート' },
-
-            // 3色の組み合わせ
             'red+yellow+blue': { color: '#8B4513', name: 'ちゃいろ', object: 'つち' },
             'red+yellow+white': { color: '#FFDAB9', name: 'うすだいだい', object: 'もも' },
             'red+blue+white': { color: '#DDA0DD', name: 'うすむらさき', object: 'ラベンダー' },
@@ -471,8 +507,6 @@
             'red+yellow+black': { color: '#5C4033', name: 'こげちゃ', object: 'コーヒーまめ' },
             'red+blue+black': { color: '#2B124C', name: 'くろむらさき', object: 'なす' },
             'yellow+blue+black': { color: '#556B2F', name: 'オリーブいろ', object: 'もり' },
-            
-            // 4色以上の組み合わせ
             'red+yellow+blue+white': { color: '#D2B48C', name: 'ベージュ', object: 'すな' },
             'red+yellow+blue+black': { color: '#4B4B4B', name: 'こいはいいろ', object: 'いし' },
         };
@@ -489,7 +523,7 @@
             document.querySelector(`.color-button.${colorName}`).classList.add('selected');
 
             updateSelectedDisplay();
-            updateMixButton();
+            updateButtonStates();
         }
 
         function updateSelectedDisplay() {
@@ -516,12 +550,15 @@
             selectedColors.splice(index, 1);
             document.querySelector(`.color-button.${removedColor.name}`).classList.remove('selected');
             updateSelectedDisplay();
-            updateMixButton();
+            updateButtonStates();
         }
 
-        function updateMixButton() {
+        function updateButtonStates() {
             const mixButton = document.getElementById('mixButton');
             mixButton.disabled = selectedColors.length < 1;
+
+            const gemButton = document.getElementById('gemButton');
+            gemButton.disabled = !mixedColorHex;
         }
 
         function mixColors() {
@@ -529,30 +566,28 @@
 
             let result;
             
-            // ソートしてキーを作成
             const colorNames = selectedColors.map(c => c.name).sort();
             const mixKey = colorNames.join('+');
             
-            // colorResultsから結果を探す
             result = colorResults[mixKey];
 
-            // 組み合わせが見つからない場合のフォールバック
             if (!result) {
-                // 2色以上の場合は平均色を計算
                 const avgColor = calculateAverageColor(selectedColors.map(c => c.hex));
                 if (selectedColors.length >= 4) {
-                    // 4色以上は「ごちゃまぜいろ」
                     result = { color: avgColor, name: 'ごちゃまぜいろ', object: 'ねんど' };
                 } else {
-                    // 2-3色は「まざったいろ」
                     result = { color: avgColor, name: 'まざったいろ', object: 'えのぐ' };
                 }
             }
+            
+            mixedColorHex = result.color;
+            isGem = false;
 
             const resultColor = document.getElementById('resultColor');
-            resultColor.style.backgroundColor = result.color;
+            resultColor.classList.remove('gem');
+            resultColor.style.backgroundColor = mixedColorHex;
+            resultColor.style.setProperty('--gem-color', mixedColorHex);
             
-            // 白と黒の場合、文字色を反転させて見やすくする
             if (result.name === 'しろ' || result.name === 'クリーム' || result.name.startsWith('うす')) {
                 resultColor.style.color = '#333';
             } else {
@@ -562,7 +597,18 @@
             resultColor.innerHTML = `<span>${result.object}</span><br><span>(${result.name})</span>`;
             resultColor.style.fontSize = '1.5em';
 
+            updateButtonStates();
             celebrate();
+        }
+
+        function createGem() {
+            if (!mixedColorHex) return;
+            if (isGem) return;
+
+            const resultColor = document.getElementById('resultColor');
+            resultColor.classList.add('gem');
+            resultColor.innerHTML = `<span>ほうせき</span>`;
+            isGem = true;
         }
 
         function calculateAverageColor(hexColors) {
@@ -603,7 +649,7 @@
                         document.querySelector(`.color-button.${color.name}`).classList.remove('selected');
                     });
                     updateSelectedDisplay();
-                    updateMixButton();
+                    updateButtonStates();
                 }
             }
         }
@@ -646,6 +692,8 @@
 
         function clearAll() {
             selectedColors = [];
+            mixedColorHex = null;
+            isGem = false;
 
             document.querySelectorAll('.color-button').forEach(button => {
                 button.classList.remove('selected');
@@ -657,8 +705,9 @@
             resultColor.innerHTML = '？';
             resultColor.style.color = '#999';
             resultColor.style.fontSize = '1.5em';
+            resultColor.classList.remove('gem');
 
-            updateMixButton();
+            updateButtonStates();
         }
     </script>
 </body>
