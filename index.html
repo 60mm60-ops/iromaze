@@ -21,7 +21,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
             background: white;
             border-radius: 30px;
@@ -53,17 +53,53 @@
             background: white;
         }
 
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .control-button {
+            background: linear-gradient(45deg, #FF6B6B, #FF8C00);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .color-count-display {
+            background: #FFC107;
+            color: #333;
+            padding: 15px;
+            border-radius: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
         .color-buttons {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
             gap: 15px;
             margin-bottom: 40px;
             justify-items: center;
         }
 
         .color-button {
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             border: 6px solid white;
             cursor: pointer;
@@ -73,7 +109,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8em;
+            font-size: 1.4em;
             color: white;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             font-weight: bold;
@@ -104,6 +140,11 @@
         .purple { background-color: #9932CC; }
         .white { background-color: #FFFFFF; border-color: #333; color: #333; text-shadow: none; }
         .black { background-color: #000000; }
+        .pink { background-color: #FF69B4; }
+        .brown { background-color: #8B4513; }
+        .gray { background-color: #808080; }
+        .lime { background-color: #32FF32; }
+        .lightblue { background-color: #87CEEB; }
 
         .selected-colors {
             margin-bottom: 30px;
@@ -119,17 +160,37 @@
         .selected-display {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .selected-color {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             border: 4px solid #FFC107;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             transition: all 0.5s ease;
+            position: relative;
+        }
+
+        .selected-color .remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background: #FF6B6B;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
 
         .mix-button {
@@ -247,14 +308,14 @@
 
         @media (max-width: 768px) {
             .color-buttons {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
                 gap: 10px;
             }
 
             .color-button {
-                width: 80px;
-                height: 80px;
-                font-size: 1.4em;
+                width: 70px;
+                height: 70px;
+                font-size: 1.1em;
             }
 
             .header h1 {
@@ -273,6 +334,16 @@
             .main-content {
                 padding: 20px 15px;
             }
+
+            .selected-color {
+                width: 50px;
+                height: 50px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
@@ -284,21 +355,35 @@
         </div>
 
         <div class="main-content">
-            <div class="color-buttons">
-                <div class="color-button red" onclick="selectColor('red', '#FF6B6B')">あか</div>
-                <div class="color-button yellow" onclick="selectColor('yellow', '#FFD700')">きいろ</div>
-                <div class="color-button blue" onclick="selectColor('blue', '#4169E1')">あお</div>
-                <div class="color-button green" onclick="selectColor('green', '#32CD32')">みどり</div>
-                <div class="color-button orange" onclick="selectColor('orange', '#FF8C00')">オレンジ</div>
-                <div class="color-button purple" onclick="selectColor('purple', '#9932CC')">むらさき</div>
-                <div class="color-button white" onclick="selectColor('white', '#FFFFFF')">しろ</div>
-                <div class="color-button black" onclick="selectColor('black', '#000000')">くろ</div>
+            <div class="controls">
+                <button class="control-button" onclick="addColorSlot()">いろをふやす ➕</button>
+                <button class="control-button" onclick="removeColorSlot()">いろをへらす ➖</button>
+                <button class="control-button" onclick="addNewColors()">いろをかくす 👁️</button>
+            </div>
+
+            <div class="color-count-display" id="colorCountDisplay">
+                まぜられるいろのかず: <span id="maxColors">4</span>こ
+            </div>
+
+            <div class="color-buttons" id="colorButtons">
+                <div class="color-button red" onclick="selectColor('red', '#FF6B6B', 'あか')">あか</div>
+                <div class="color-button yellow" onclick="selectColor('yellow', '#FFD700', 'きいろ')">きいろ</div>
+                <div class="color-button blue" onclick="selectColor('blue', '#4169E1', 'あお')">あお</div>
+                <div class="color-button green" onclick="selectColor('green', '#32CD32', 'みどり')">みどり</div>
+                <div class="color-button orange" onclick="selectColor('orange', '#FF8C00', 'オレンジ')">オレンジ</div>
+                <div class="color-button purple" onclick="selectColor('purple', '#9932CC', 'むらさき')">むらさき</div>
+                <div class="color-button pink" onclick="selectColor('pink', '#FF69B4', 'ピンク')">ピンク</div>
+                <div class="color-button brown" onclick="selectColor('brown', '#8B4513', 'ちゃいろ')">ちゃいろ</div>
+                <div class="color-button lightblue" onclick="selectColor('lightblue', '#87CEEB', 'みずいろ')">みずいろ</div>
+                <div class="color-button lime" onclick="selectColor('lime', '#32FF32', 'きみどり')">きみどり</div>
+                <div class="color-button white" onclick="selectColor('white', '#FFFFFF', 'しろ')">しろ</div>
+                <div class="color-button black" onclick="selectColor('black', '#000000', 'くろ')">くろ</div>
             </div>
 
             <div class="selected-colors">
                 <h3>えらんだいろ</h3>
                 <div class="selected-display" id="selectedDisplay">
-                    </div>
+                </div>
                 <button class="mix-button" id="mixButton" onclick="mixColors()" disabled>
                     いろをまぜる ✨
                 </button>
@@ -317,61 +402,90 @@
     </div>
 
     <div class="celebration" id="celebration">
-        </div>
+    </div>
 
     <script>
         let selectedColors = [];
-        let selectedHexColors = [];
+        let maxColorsToMix = 4;
+        let extraColorsShown = false;
 
-        // すべての色の組み合わせとその結果を定義
-        const colorMixing = {
-            'red+yellow': { color: '#FF8C00', name: 'オレンジ', object: 'みかん' },
+        // すべての色データ（12色）
+        const allColors = [
+            { name: 'red', hex: '#FF6B6B', text: 'あか' },
+            { name: 'yellow', hex: '#FFD700', text: 'きいろ' },
+            { name: 'blue', hex: '#4169E1', text: 'あお' },
+            { name: 'green', hex: '#32CD32', text: 'みどり' },
+            { name: 'orange', hex: '#FF8C00', text: 'オレンジ' },
+            { name: 'purple', hex: '#9932CC', text: 'むらさき' },
+            { name: 'pink', hex: '#FF69B4', text: 'ピンク' },
+            { name: 'brown', hex: '#8B4513', text: 'ちゃいろ' },
+            { name: 'lightblue', hex: '#87CEEB', text: 'みずいろ' },
+            { name: 'lime', hex: '#32FF32', text: 'きみどり' },
+            { name: 'white', hex: '#FFFFFF', text: 'しろ' },
+            { name: 'black', hex: '#000000', text: 'くろ' }
+        ];
+
+        // 色混ぜの結果（複数色対応）
+        const colorResults = {
+            // 単色
+            'red': { color: '#FF6B6B', name: 'あか', object: 'りんご' },
+            'yellow': { color: '#FFD700', name: 'きいろ', object: 'ひまわり' },
+            'blue': { color: '#4169E1', name: 'あお', object: 'うみ' },
+            'green': { color: '#32CD32', name: 'みどり', object: 'はっぱ' },
+            'orange': { color: '#FF8C00', name: 'オレンジ', object: 'みかん' },
+            'purple': { color: '#9932CC', name: 'むらさき', object: 'ぶどう' },
+            'white': { color: '#FFFFFF', name: 'しろ', object: 'ゆき' },
+            'black': { color: '#000000', name: 'くろ', object: 'よる' },
+            'pink': { color: '#FF69B4', name: 'ピンク', object: 'さくら' },
+            'brown': { color: '#8B4513', name: 'ちゃいろ', object: 'チョコレート' },
+            'gray': { color: '#808080', name: 'はいいろ', object: 'ねずみ' },
+            'lime': { color: '#32FF32', name: 'きみどり', object: 'メロン' },
+            'lightblue': { color: '#87CEEB', name: 'みずいろ', object: 'そら' },
+
+            // 2色の組み合わせ
+            'red+yellow': { color: '#FF8C00', name: 'オレンジ', object: 'たいよう' },
             'red+blue': { color: '#9932CC', name: 'むらさき', object: 'ぶどう' },
-            'red+green': { color: '#8B4513', name: 'ちゃいろ', object: 'チョコレート' },
-            'red+orange': { color: '#FF4500', name: 'あかオレンジ', object: 'にんじん' },
-            'red+purple': { color: '#C71585', name: 'あかむらさき', object: 'さくらんぼ' },
-            'red+white': { color: '#FFB6C1', name: 'ピンク', object: 'さくら' },
-            'red+black': { color: '#800000', name: 'くろあか', object: 'あんこ' },
-            
             'yellow+blue': { color: '#32CD32', name: 'みどり', object: 'はっぱ' },
-            'yellow+green': { color: '#9ACD32', name: 'きみどり', object: 'わかば' },
-            'yellow+orange': { color: '#FFB347', name: 'きオレンジ', object: 'かぼちゃ' },
-            'yellow+purple': { color: '#BA55D3', name: 'きむらさき', object: 'すみれ' },
-            'yellow+white': { color: '#FFFACD', name: 'クリーム', object: 'ケーキ' },
-            'yellow+black': { color: '#808000', name: 'オリーブ', object: 'ひまわりのたね' },
-            
-            'blue+green': { color: '#008B8B', name: 'あおみどり', object: 'うみ' },
-            'blue+orange': { color: '#708090', name: 'はいいろ', object: 'くも' },
-            'blue+purple': { color: '#4B0082', name: 'あおむらさき', object: 'よぞら' },
+            'red+white': { color: '#FFB6C1', name: 'ピンク', object: 'もものはな' },
             'blue+white': { color: '#ADD8E6', name: 'みずいろ', object: 'そら' },
-            'blue+black': { color: '#191970', name: 'こんいろ', object: 'よるのそら' },
-            
-            'green+orange': { color: '#228B22', name: 'きみどり', object: 'きゅうり' },
-            'green+purple': { color: '#556B2F', name: 'オリーブ', object: 'もり' },
-            'green+white': { color: '#98FB98', name: 'うすみどり', object: 'みどりちゃ' },
-            'green+black': { color: '#006400', name: 'こいみどり', object: 'まつ' },
-            
-            'orange+purple': { color: '#CD853F', name: 'きちゃ', object: 'ドーナツ' },
-            'orange+white': { color: '#FFDAB9', name: 'うすオレンジ', object: 'ももいろ' },
-            'orange+black': { color: '#A0522D', name: 'ちゃいろ', object: 'きのみ' },
-            
+            'yellow+white': { color: '#FFFACD', name: 'クリーム', object: 'たまご' },
+            'red+black': { color: '#800000', name: 'えんじいろ', object: 'あずき' },
+            'blue+black': { color: '#191970', name: 'こんいろ', object: 'よるのうみ' },
+            'yellow+black': { color: '#808000', name: 'オリーブ', object: 'オリーブのき' },
+            'white+black': { color: '#808080', name: 'はいいろ', object: 'くも' },
+            'orange+white': { color: '#FFDAB9', name: 'うすだいだい', object: 'もも' },
             'purple+white': { color: '#DDA0DD', name: 'うすむらさき', object: 'ラベンダー' },
-            'purple+black': { color: '#4B0082', name: 'こいむらさき', object: 'なす' },
+            'green+white': { color: '#98FB98', name: 'うすみどり', object: 'きゃべつ' },
+            'red+green': { color: '#A0522D', name: 'ちゃいろ', object: 'つち' },
+            'blue+green': { color: '#008B8B', name: 'あおみどり', object: 'うみべ' },
+            'red+orange': { color: '#FF4500', name: 'しゅいろ', object: 'トマト' },
+            'yellow+green': { color: '#ADFF2F', name: 'きみどり', object: 'きゅうり' },
+            'blue+purple': { color: '#4B0082', name: 'ふかむらさき', object: 'なす' },
+            'orange+black': { color: '#8B4513', name: 'こげちゃ', object: 'チョコレート' },
+
+            // 3色の組み合わせ
+            'red+yellow+blue': { color: '#8B4513', name: 'ちゃいろ', object: 'つち' },
+            'red+yellow+white': { color: '#FFDAB9', name: 'うすだいだい', object: 'もも' },
+            'red+blue+white': { color: '#DDA0DD', name: 'うすむらさき', object: 'ラベンダー' },
+            'yellow+blue+white': { color: '#F0F8B4', name: 'うすみどり', object: 'レタス' },
+            'red+yellow+black': { color: '#5C4033', name: 'こげちゃ', object: 'コーヒーまめ' },
+            'red+blue+black': { color: '#2B124C', name: 'くろむらさき', object: 'なす' },
+            'yellow+blue+black': { color: '#556B2F', name: 'オリーブいろ', object: 'もり' },
             
-            'white+black': { color: '#808080', name: 'はいいろ', object: 'ゾウ' }
+            // 4色以上の組み合わせ
+            'red+yellow+blue+white': { color: '#D2B48C', name: 'ベージュ', object: 'すな' },
+            'red+yellow+blue+black': { color: '#4B4B4B', name: 'こいはいいろ', object: 'いし' },
         };
 
-        function selectColor(colorName, hexColor) {
-            if (selectedColors.length >= 2) {
+        function selectColor(colorName, hexColor, displayText) {
+            if (selectedColors.length >= maxColorsToMix) {
                 return;
             }
-            if (selectedColors.includes(colorName)) {
+            if (selectedColors.some(color => color.name === colorName)) {
                 return;
             }
 
-            selectedColors.push(colorName);
-            selectedHexColors.push(hexColor);
-
+            selectedColors.push({ name: colorName, hex: hexColor, text: displayText });
             document.querySelector(`.color-button.${colorName}`).classList.add('selected');
 
             updateSelectedDisplay();
@@ -382,44 +496,130 @@
             const display = document.getElementById('selectedDisplay');
             display.innerHTML = '';
 
-            selectedHexColors.forEach(color => {
+            selectedColors.forEach((color, index) => {
                 const colorDiv = document.createElement('div');
                 colorDiv.className = 'selected-color';
-                colorDiv.style.backgroundColor = color;
+                colorDiv.style.backgroundColor = color.hex;
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.textContent = '×';
+                removeBtn.onclick = () => removeSelectedColor(index);
+                colorDiv.appendChild(removeBtn);
+                
                 display.appendChild(colorDiv);
             });
         }
 
+        function removeSelectedColor(index) {
+            const removedColor = selectedColors[index];
+            selectedColors.splice(index, 1);
+            document.querySelector(`.color-button.${removedColor.name}`).classList.remove('selected');
+            updateSelectedDisplay();
+            updateMixButton();
+        }
+
         function updateMixButton() {
             const mixButton = document.getElementById('mixButton');
-            mixButton.disabled = selectedColors.length !== 2;
+            mixButton.disabled = selectedColors.length < 1;
         }
 
         function mixColors() {
-            if (selectedColors.length !== 2) return;
+            if (selectedColors.length < 1) return;
 
-            const color1 = selectedColors[0];
-            const color2 = selectedColors[1];
+            let result;
             
-            // 色の組み合わせキーを生成（順序を統一）
-            const mixKey1 = `${color1}+${color2}`;
-            const mixKey2 = `${color2}+${color1}`;
+            // ソートしてキーを作成
+            const colorNames = selectedColors.map(c => c.name).sort();
+            const mixKey = colorNames.join('+');
             
-            // 組み合わせ結果を取得
-            let mixResult = colorMixing[mixKey1] || colorMixing[mixKey2];
-            
-            if (!mixResult) {
-                // フォールバック（念のため）
-                mixResult = { color: '#808080', name: 'ふしぎないろ', object: 'なにかな？' };
+            // colorResultsから結果を探す
+            result = colorResults[mixKey];
+
+            // 組み合わせが見つからない場合のフォールバック
+            if (!result) {
+                // 2色以上の場合は平均色を計算
+                const avgColor = calculateAverageColor(selectedColors.map(c => c.hex));
+                if (selectedColors.length >= 4) {
+                    // 4色以上は「ごちゃまぜいろ」
+                    result = { color: avgColor, name: 'ごちゃまぜいろ', object: 'ねんど' };
+                } else {
+                    // 2-3色は「まざったいろ」
+                    result = { color: avgColor, name: 'まざったいろ', object: 'えのぐ' };
+                }
             }
 
             const resultColor = document.getElementById('resultColor');
-            resultColor.style.backgroundColor = mixResult.color;
-            resultColor.innerHTML = `<span>${mixResult.object}</span><br><span>(${mixResult.name})</span>`;
-            resultColor.style.color = '#333';
+            resultColor.style.backgroundColor = result.color;
+            
+            // 白と黒の場合、文字色を反転させて見やすくする
+            if (result.name === 'しろ' || result.name === 'クリーム' || result.name.startsWith('うす')) {
+                resultColor.style.color = '#333';
+            } else {
+                resultColor.style.color = '#fff';
+            }
+
+            resultColor.innerHTML = `<span>${result.object}</span><br><span>(${result.name})</span>`;
             resultColor.style.fontSize = '1.5em';
 
             celebrate();
+        }
+
+        function calculateAverageColor(hexColors) {
+            let totalR = 0, totalG = 0, totalB = 0;
+            
+            hexColors.forEach(hex => {
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                totalR += r;
+                totalG += g;
+                totalB += b;
+            });
+
+            const count = hexColors.length;
+            const avgR = Math.round(totalR / count);
+            const avgG = Math.round(totalG / count);
+            const avgB = Math.round(totalB / count);
+
+            return `#${avgR.toString(16).padStart(2, '0')}${avgG.toString(16).padStart(2, '0')}${avgB.toString(16).padStart(2, '0')}`;
+        }
+
+        function addColorSlot() {
+            if (maxColorsToMix < 6) {
+                maxColorsToMix++;
+                document.getElementById('maxColors').textContent = maxColorsToMix;
+            }
+        }
+
+        function removeColorSlot() {
+            if (maxColorsToMix > 2) {
+                maxColorsToMix--;
+                document.getElementById('maxColors').textContent = maxColorsToMix;
+                
+                if (selectedColors.length > maxColorsToMix) {
+                    const excessColors = selectedColors.splice(maxColorsToMix);
+                    excessColors.forEach(color => {
+                        document.querySelector(`.color-button.${color.name}`).classList.remove('selected');
+                    });
+                    updateSelectedDisplay();
+                    updateMixButton();
+                }
+            }
+        }
+
+        function addNewColors() {
+            const colorButtonsContainer = document.getElementById('colorButtons');
+            const isHidden = colorButtonsContainer.style.display === 'none';
+            
+            if (isHidden) {
+                colorButtonsContainer.style.display = 'grid';
+                document.querySelector('[onclick="addNewColors()"]').textContent = 'いろをかくす 👁️';
+            } else {
+                colorButtonsContainer.style.display = 'none';
+                document.querySelector('[onclick="addNewColors()"]').textContent = 'いろをみせる ✨';
+                clearAll();
+            }
         }
 
         function celebrate() {
@@ -446,7 +646,6 @@
 
         function clearAll() {
             selectedColors = [];
-            selectedHexColors = [];
 
             document.querySelectorAll('.color-button').forEach(button => {
                 button.classList.remove('selected');
@@ -455,7 +654,7 @@
             document.getElementById('selectedDisplay').innerHTML = '';
             const resultColor = document.getElementById('resultColor');
             resultColor.style.backgroundColor = '#f0f0f0';
-            resultColor.textContent = '？';
+            resultColor.innerHTML = '？';
             resultColor.style.color = '#999';
             resultColor.style.fontSize = '1.5em';
 
