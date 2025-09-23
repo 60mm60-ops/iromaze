@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 いろまぜあそび</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Hiragino Kaku Gothic Pro', sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #FFB6C1 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 5px solid #FFD700;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #FF69B4, #87CEEB);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.5em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px 30px;
+            background: white;
+        }
+
+        .color-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .color-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 6px solid white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-weight: bold;
+        }
+
+        .color-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+        }
+
+        .color-button.selected {
+            transform: scale(1.2);
+            border-color: #FFD700;
+            border-width: 8px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .red { background: #FF4444; }
+        .yellow { background: #FFD700; }
+        .blue { background: #4169E1; }
+        .green { background: #32CD32; }
+        .orange { background: #FF8C00; }
+        .purple { background: #9932CC; }
+        .white { 
+            background: #FFFFFF; 
+            color: #333;
+            text-shadow: none;
+            border-color: #333;
+        }
+        .black { 
+            background: #000000; 
+            color: white;
+        }
+
+        .selected-colors {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .selected-colors h3 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .selected-display {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .selected-color {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #FFD700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .mix-button {
+            background: linear-gradient(45deg, #FF69B4, #87CEEB);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 20px 40px;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            margin: 0 20px;
+        }
+
+        .mix-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+        }
+
+        .mix-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-area {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .result-area h3 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .result-color {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            border: 8px solid #FFD700;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: #999;
+        }
+
+        .clear-button {
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .clear-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .celebration.active {
+            display: block;
+            animation: celebrate 2s ease-out;
+        }
+
+        @keyframes celebrate {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #FFD700;
+            animation: fall 2s linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .color-buttons {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .color-button {
+                width: 80px;
+                height: 80px;
+                font-size: 1.2em;
+            }
+
+            .header h1 {
+                font-size: 2.5em;
+            }
+
+            .header p {
+                font-size: 1.2em;
+            }
+
+            .result-color {
+                width: 150px;
+                height: 150px;
+            }
+
+            .main-content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 いろまぜあそび</h1>
+            <p>いろをえらんで まぜてみよう！</p>
+        </div>
+
+        <div class="main-content">
+            <div class="color-buttons">
+                <div class="color-button red" onclick="selectColor('red', '#FF4444')">あか</div>
+                <div class="color-button yellow" onclick="selectColor('yellow', '#FFD700')">きいろ</div>
+                <div class="color-button blue" onclick="selectColor('blue', '#4169E1')">あお</div>
+                <div class="color-button green" onclick="selectColor('green', '#32CD32')">みどり</div>
+                <div class="color-button orange" onclick="selectColor('orange', '#FF8C00')">おれんじ</div>
+                <div class="color-button purple" onclick="selectColor('purple', '#9932CC')">むらさき</div>
+                <div class="color-button white" onclick="selectColor('white', '#FFFFFF')">しろ</div>
+                <div class="color-button black" onclick="selectColor('black', '#000000')">くろ</div>
+            </div>
+
+            <div class="selected-colors">
+                <h3>えらんだいろ</h3>
+                <div class="selected-display" id="selectedDisplay">
+                    <!-- 選択された色がここに表示される -->
+                </div>
+                <button class="mix-button" id="mixButton" onclick="mixColors()" disabled>
+                    いろをまぜる ✨
+                </button>
+            </div>
+
+            <div class="result-area">
+                <h3>できたいろ</h3>
+                <div class="result-color" id="resultColor">
+                    ？
+                </div>
+                <button class="clear-button" onclick="clearAll()">
+                    もういちど 🔄
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration">
+        <!-- 紙吹雪がここに生成される -->
+    </div>
+
+    <script>
+        let selectedColors = [];
+        let selectedHexColors = [];
+
+        const colorMixes = {
+            'red,yellow': { color: '#FF8C00', name: 'おれんじ' },
+            'yellow,red': { color: '#FF8C00', name: 'おれんじ' },
+            'red,blue': { color: '#9932CC', name: 'むらさき' },
+            'blue,red': { color: '#9932CC', name: 'むらさき' },
+            'yellow,blue': { color: '#32CD32', name: 'みどり' },
+            'blue,yellow': { color: '#32CD32', name: 'みどり' },
+            'red,white': { color: '#FFB6C1', name: 'ピンク' },
+            'white,red': { color: '#FFB6C1', name: 'ピンク' },
+            'blue,white': { color: '#87CEEB', name: 'みずいろ' },
+            'white,blue': { color: '#87CEEB', name: 'みずいろ' },
+            'yellow,white': { color: '#FFFFE0', name: 'うすきいろ' },
+            'white,yellow': { color: '#FFFFE0', name: 'うすきいろ' },
+            'green,white': { color: '#98FB98', name: 'うすみどり' },
+            'white,green': { color: '#98FB98', name: 'うすみどり' },
+            'red,black': { color: '#8B0000', name: 'あかぐろ' },
+            'black,red': { color: '#8B0000', name: 'あかぐろ' },
+            'blue,black': { color: '#191970', name: 'あおぐろ' },
+            'black,blue': { color: '#191970', name: 'あおぐろ' },
+            'yellow,black': { color: '#B8860B', name: 'からしいろ' },
+            'black,yellow': { color: '#B8860B', name: 'からしいろ' },
+            'green,black': { color: '#006400', name: 'みどりぐろ' },
+            'black,green': { color: '#006400', name: 'みどりぐろ' },
+            'white,black': { color: '#808080', name: 'はいいろ' },
+            'black,white': { color: '#808080', name: 'はいいろ' },
+            'blue,green': { color: '#20B2AA', name: 'あおみどり' },
+            'green,blue': { color: '#20B2AA', name: 'あおみどり' },
+            'red,green': { color: '#8B4513', name: 'ちゃいろ' },
+            'green,red': { color: '#8B4513', name: 'ちゃいろ' },
+            'purple,white': { color: '#DDA0DD', name: 'うすむらさき' },
+            'white,purple': { color: '#DDA0DD', name: 'うすむらさき' },
+            'orange,white': { color: '#FFEFD5', name: 'うすおれんじ' },
+            'white,orange': { color: '#FFEFD5', name: 'うすおれんじ' }
+        };
+
+        function selectColor(colorName, hexColor) {
+            // 最大2色まで選択可能
+            if (selectedColors.length >= 2) {
+                return;
+            }
+
+            // 同じ色は選択できない
+            if (selectedColors.includes(colorName)) {
+                return;
+            }
+
+            selectedColors.push(colorName);
+            selectedHexColors.push(hexColor);
+
+            // ボタンを選択状態にする
+            document.querySelector(`.color-button.${colorName}`).classList.add('selected');
+
+            updateSelectedDisplay();
+            updateMixButton();
+        }
+
+        function updateSelectedDisplay() {
+            const display = document.getElementById('selectedDisplay');
+            display.innerHTML = '';
+
+            selectedHexColors.forEach(color => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'selected-color';
+                colorDiv.style.backgroundColor = color;
+                display.appendChild(colorDiv);
+            });
+        }
+
+        function updateMixButton() {
+            const mixButton = document.getElementById('mixButton');
+            mixButton.disabled = selectedColors.length !== 2;
+        }
+
+        function mixColors() {
+            if (selectedColors.length !== 2) return;
+
+            const key = selectedColors.join(',');
+            const result = colorMixes[key];
+
+            if (result) {
+                const resultColor = document.getElementById('resultColor');
+                resultColor.style.backgroundColor = result.color;
+                resultColor.textContent = result.name;
+                resultColor.style.color = 'white';
+                resultColor.style.fontSize = '1.8em';
+
+                // お祝いアニメーション
+                celebrate();
+            }
+        }
+
+        function celebrate() {
+            const celebration = document.getElementById('celebration');
+            celebration.innerHTML = '';
+            celebration.classList.add('active');
+
+            // 紙吹雪を生成
+            const colors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FF6B6B'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                celebration.appendChild(confetti);
+            }
+
+            // 2秒後にアニメーションを停止
+            setTimeout(() => {
+                celebration.classList.remove('active');
+            }, 2000);
+        }
+
+        function clearAll() {
+            selectedColors = [];
+            selectedHexColors = [];
+
+            // すべてのボタンの選択を解除
+            document.querySelectorAll('.color-button').forEach(button => {
+                button.classList.remove('selected');
+            });
+
+            // 表示をリセット
+            document.getElementById('selectedDisplay').innerHTML = '';
+            const resultColor = document.getElementById('resultColor');
+            resultColor.style.backgroundColor = '#f0f0f0';
+            resultColor.textContent = '？';
+            resultColor.style.color = '#999';
+            resultColor.style.fontSize = '1.5em';
+
+            updateMixButton();
+        }
+    </script>
+</body>
+</html>
