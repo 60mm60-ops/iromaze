@@ -69,9 +69,9 @@
             width: 200px; height: 200px; border-radius: 50%; margin: 0 auto 30px; border: 8px solid #FFC107;
             box-shadow: 0 15px 40px rgba(0,0,0,0.2); background: #f0f0f0;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5em; color: #999; flex-direction: column; padding: 20px;
+            font-size: 3em; color: #999; flex-direction: column; padding: 20px;
         }
-        .result-color span { font-size: 0.8em; color: #333; font-weight: bold; }
+        .result-color span { font-size: 0.4em; color: #333; font-weight: bold; margin-top: 10px; }
         .clear-button {
             background: #FF6B6B; color: white; border: none; border-radius: 20px;
             padding: 15px 30px; font-size: 1.5em; font-weight: bold; cursor: pointer;
@@ -151,53 +151,228 @@
 
         const colorResults = {
             // 単色
-            'red': { color: '#FF6B6B', name: 'あか', object: 'りんご' },
-            'yellow': { color: '#FFD700', name: 'きいろ', object: 'ひまわり' },
-            'blue': { color: '#4169E1', name: 'あお', object: 'そら' },
-            'green': { color: '#32CD32', name: 'みどり', object: 'はっぱ' },
-            'orange': { color: '#FF8C00', name: 'オレンジ', object: 'みかん' },
-            'purple': { color: '#9932CC', name: 'むらさき', object: 'ぶどう' },
-            'white': { color: '#FFFFFF', name: 'しろ', object: 'ゆき' },
-            'black': { color: '#000000', name: 'くろ', object: 'よる' },
-            'pink': { color: '#FF69B4', name: 'ピンク', object: 'さくら' },
-            'brown': { color: '#8B4513', name: 'ちゃいろ', object: 'チョコレート' },
-            'gray': { color: '#808080', name: 'はいいろ', object: 'くも' },
-            'lime': { color: '#32FF32', name: 'きみどり', object: 'メロン' },
-            'lightblue': { color: '#87CEEB', name: 'みずいろ', object: 'みずうみ' },
+            'red': { color: '#FF6B6B', name: 'あか', object: '🍎' },
+            'yellow': { color: '#FFD700', name: 'きいろ', object: '🌻' },
+            'blue': { color: '#4169E1', name: 'あお', object: '🩵' },
+            'green': { color: '#32CD32', name: 'みどり', object: '🍃' },
+            'orange': { color: '#FF8C00', name: 'オレンジ', object: '🍊' },
+            'purple': { color: '#9932CC', name: 'むらさき', object: '🍇' },
+            'white': { color: '#FFFFFF', name: 'しろ', object: '❄️' },
+            'black': { color: '#000000', name: 'くろ', object: '🌙' },
+            'pink': { color: '#FF69B4', name: 'ピンク', object: '🌸' },
+            'brown': { color: '#8B4513', name: 'ちゃいろ', object: '🍫' },
+            'gray': { color: '#808080', name: 'はいいろ', object: '☁️' },
+            'lime': { color: '#32FF32', name: 'きみどり', object: '🍈' },
+            'lightblue': { color: '#87CEEB', name: 'みずいろ', object: '🏞️' },
 
-            // 2色
-            'red+yellow': { color: '#FF8C00', name: 'オレンジ', object: 'たいよう' },
-            'red+blue': { color: '#9932CC', name: 'むらさき', object: 'ぶどう' },
-            'yellow+blue': { color: '#32CD32', name: 'みどり', object: 'はっぱ' },
-            'red+white': { color: '#FFB6C1', name: 'ピンク', object: 'さくら' },
-            'blue+white': { color: '#ADD8E6', name: 'みずいろ', object: 'あめ' },
-            'yellow+white': { color: '#FFFACD', name: 'クリームいろ', object: 'プリン' },
-            'red+black': { color: '#800000', name: 'えんじ', object: 'けっしょう' },
-            'blue+black': { color: '#191970', name: 'こん', object: 'よるのそら' },
-            'yellow+black': { color: '#808000', name: 'オリーブ', object: 'もり' },
-            'white+black': { color: '#808080', name: 'はいいろ', object: 'いし' },
-            'orange+white': { color: '#FFDAB9', name: 'うすオレンジ', object: 'もも' },
-            'purple+white': { color: '#DDA0DD', name: 'うすむらさき', object: 'ラベンダー' },
-            'green+white': { color: '#98FB98', name: 'うすみどり', object: 'わかば' },
-            'red+green': { color: '#A0522D', name: 'ちゃいろ', object: 'つち' },
-            'blue+green': { color: '#008B8B', name: 'あおみどり', object: 'うみべ' },
-            'red+orange': { color: '#FF4500', name: 'しゅいろ', object: 'トマト' },
-            'yellow+green': { color: '#ADFF2F', name: 'きみどり', object: 'きゅうり' },
-            'blue+purple': { color: '#4B0082', name: 'ふかむらさき', object: 'なす' },
-            'orange+black': { color: '#8B4513', name: 'こげちゃ', object: 'コーヒー' },
+            // 同じ色の重複
+            'red+red': { color: '#DC143C', name: 'まっか', object: '❤️' },
+            'yellow+yellow': { color: '#FFFF00', name: 'まっきいろ', object: '💛' },
+            'blue+blue': { color: '#0000FF', name: 'まっあお', object: '💙' },
+            'green+green': { color: '#008000', name: 'まっみどり', object: '💚' },
+            'orange+orange': { color: '#FF6347', name: 'まっオレンジ', object: '🧡' },
+            'purple+purple': { color: '#8B008B', name: 'まっむらさき', object: '💜' },
+            'pink+pink': { color: '#FF1493', name: 'まっピンク', object: '🩷' },
+            'brown+brown': { color: '#654321', name: 'まっちゃいろ', object: '🤎' },
+            'white+white': { color: '#FFFFFF', name: 'まっしろ', object: '🤍' },
+            'black+black': { color: '#000000', name: 'まっくろ', object: '🖤' },
+            'gray+gray': { color: '#696969', name: 'まっはいいろ', object: '🩶' },
 
-            // 3色
-            'red+yellow+blue': { color: '#8B4513', name: 'ちゃいろ', object: 'つち' },
-            'red+yellow+white': { color: '#FFDAB9', name: 'うすオレンジ', object: 'もも' },
-            'red+blue+white': { color: '#DDA0DD', name: 'うすむらさき', object: 'すみれ' },
-            'yellow+blue+white': { color: '#F0F8B4', name: 'うすみどり', object: 'わかば' },
-            'red+yellow+black': { color: '#5C4033', name: 'こげちゃ', object: 'コーヒーまめ' },
-            'red+blue+black': { color: '#2B124C', name: 'くろむらさき', object: 'なす' },
-            'yellow+blue+black': { color: '#556B2F', name: 'オリーブいろ', object: 'もり' },
+            // 基本の2色混合（両方向対応）
+            'red+yellow': { color: '#FF8C00', name: 'オレンジ', object: '🍊' },
+            'yellow+red': { color: '#FF8C00', name: 'オレンジ', object: '🍊' },
+            'blue+red': { color: '#9932CC', name: 'むらさき', object: '🍇' },
+            'red+blue': { color: '#9932CC', name: 'むらさき', object: '🍇' },
+            'blue+yellow': { color: '#32CD32', name: 'みどり', object: '🍃' },
+            'yellow+blue': { color: '#32CD32', name: 'みどり', object: '🍃' },
+            'red+white': { color: '#FFB6C1', name: 'ピンク', object: '🌸' },
+            'white+red': { color: '#FFB6C1', name: 'ピンク', object: '🌸' },
+            'blue+white': { color: '#ADD8E6', name: 'みずいろ', object: '💙' },
+            'white+blue': { color: '#ADD8E6', name: 'みずいろ', object: '💙' },
+            'yellow+white': { color: '#FFFACD', name: 'クリームいろ', object: '🍮' },
+            'white+yellow': { color: '#FFFACD', name: 'クリームいろ', object: '🍮' },
+            'black+red': { color: '#800000', name: 'えんじ', object: '💎' },
+            'red+black': { color: '#800000', name: 'えんじ', object: '💎' },
+            'black+blue': { color: '#191970', name: 'こん', object: '🌌' },
+            'blue+black': { color: '#191970', name: 'こん', object: '🌌' },
+            'black+yellow': { color: '#808000', name: 'オリーブ', object: '🌲' },
+            'yellow+black': { color: '#808000', name: 'オリーブ', object: '🌲' },
+            'black+white': { color: '#808080', name: 'はいいろ', object: '☁️' },
+            'white+black': { color: '#808080', name: 'はいいろ', object: '☁️' },
+            'green+red': { color: '#A0522D', name: 'ちゃいろ', object: '🟤' },
+            'red+green': { color: '#A0522D', name: 'ちゃいろ', object: '🟤' },
+            'green+blue': { color: '#008B8B', name: 'あおみどり', object: '🌊' },
+            'blue+green': { color: '#008B8B', name: 'あおみどり', object: '🌊' },
+            'green+yellow': { color: '#ADFF2F', name: 'きみどり', object: '🥒' },
+            'yellow+green': { color: '#ADFF2F', name: 'きみどり', object: '🥒' },
+            'blue+purple': { color: '#4B0082', name: 'ふかむらさき', object: '🍆' },
+            'red+purple': { color: '#8B008B', name: 'あかむらさき', object: '🌹' },
+            'yellow+orange': { color: '#FFD700', name: 'きオレンジ', object: '🌻' },
+            'green+orange': { color: '#9ACD32', name: 'みどりオレンジ', object: '🥬' },
+            'purple+orange': { color: '#8B4789', name: 'むらさきオレンジ', object: '🍇' },
+            'red+pink': { color: '#DC143C', name: 'あかピンク', object: '🌹' },
+            'blue+pink': { color: '#8A2BE2', name: 'あおピンク', object: '💜' },
+            'yellow+pink': { color: '#FFB6C1', name: 'きいろピンク', object: '🌸' },
+            'green+pink': { color: '#9ACD32', name: 'みどりピンク', object: '🌱' },
+            'orange+pink': { color: '#FF69B4', name: 'オレンジピンク', object: '🍑' },
+            'purple+pink': { color: '#DDA0DD', name: 'むらさきピンク', object: '💜' },
+            'pink+brown': { color: '#CD5C5C', name: 'ピンクちゃいろ', object: '🌸' },
+            'pink+gray': { color: '#D3D3D3', name: 'ピンクはいいろ', object: '☁️' },
 
-            // 4色以上
-            'red+yellow+blue+white': { color: '#D2B48C', name: 'ベージュ', object: 'すな' },
-            'red+yellow+blue+black': { color: '#4B4B4B', name: 'こいはいいろ', object: 'いし' },
+            // 白を含む2色混合
+            'orange+white': { color: '#FFDAB9', name: 'うすオレンジ', object: '🍑' },
+            'purple+white': { color: '#DDA0DD', name: 'うすむらさき', object: '💜' },
+            'green+white': { color: '#98FB98', name: 'うすみどり', object: '🌱' },
+            'pink+white': { color: '#FFCCCB', name: 'うすピンク', object: '🌸' },
+            'brown+white': { color: '#D2B48C', name: 'ベージュ', object: '🟫' },
+            'gray+white': { color: '#D3D3D3', name: 'うすはいいろ', object: '☁️' },
+
+            // 黒を含む2色混合
+            'orange+black': { color: '#8B4513', name: 'こげちゃ', object: '☕' },
+            'green+black': { color: '#2F4F2F', name: 'もりみどり', object: '🌲' },
+            'purple+black': { color: '#301934', name: 'こくむらさき', object: '🍆' },
+            'pink+black': { color: '#8B475D', name: 'こいピンク', object: '🌹' },
+            'brown+black': { color: '#654321', name: 'こげちゃいろ', object: '☕' },
+            'gray+black': { color: '#696969', name: 'こいはいいろ', object: '🪨' },
+
+            // 3色の混合 - 基本パターン
+            'red+yellow+blue': { color: '#8B4513', name: 'ちゃいろ', object: '🟤' },
+            'red+yellow+white': { color: '#FFDAB9', name: 'うすオレンジ', object: '🍑' },
+            'red+blue+white': { color: '#DDA0DD', name: 'うすむらさき', object: '💜' },
+            'yellow+blue+white': { color: '#F0F8B4', name: 'うすみどり', object: '🌱' },
+            'red+yellow+black': { color: '#5C4033', name: 'こげちゃ', object: '☕' },
+            'red+blue+black': { color: '#2B124C', name: 'くろむらさき', object: '🍆' },
+            'yellow+blue+black': { color: '#556B2F', name: 'オリーブいろ', object: '🌲' },
+            'red+white+black': { color: '#BC8F8F', name: 'はいピンク', object: '☁️' },
+            'yellow+white+black': { color: '#F5F5DC', name: 'はいきいろ', object: '☁️' },
+            'blue+white+black': { color: '#B0C4DE', name: 'はいあお', object: '☁️' },
+
+            // 3色の混合 - 緑を含むパターン
+            'red+green+white': { color: '#F0E68C', name: 'はいちゃ', object: '🟫' },
+            'red+green+black': { color: '#696969', name: 'こいちゃいろ', object: '🪨' },
+            'yellow+green+white': { color: '#F5FFFA', name: 'うすきみどり', object: '🌱' },
+            'yellow+green+black': { color: '#6B8E23', name: 'こいきみどり', object: '🥬' },
+            'blue+green+white': { color: '#F0FFFF', name: 'うすあおみどり', object: '💙' },
+            'blue+green+black': { color: '#2F4F4F', name: 'こいあおみどり', object: '🌊' },
+            'red+yellow+green': { color: '#CD853F', name: 'きちゃいろ', object: '🟫' },
+            'red+blue+green': { color: '#696969', name: 'みどりはい', object: '🪨' },
+            'yellow+blue+green': { color: '#9ACD32', name: 'あおみどり', object: '🥬' },
+
+            // 3色の混合 - オレンジを含むパターン
+            'red+orange+white': { color: '#FFEFD5', name: 'うすあかオレンジ', object: '🍑' },
+            'red+orange+black': { color: '#8B2500', name: 'こいあかオレンジ', object: '🍅' },
+            'yellow+orange+white': { color: '#FFF8DC', name: 'うすきオレンジ', object: '🍮' },
+            'yellow+orange+black': { color: '#FF6347', name: 'こいきオレンジ', object: '🍊' },
+            'blue+orange+white': { color: '#F5DEB3', name: 'うすあおオレンジ', object: '🟫' },
+            'blue+orange+black': { color: '#8B4513', name: 'こいあおオレンジ', object: '☕' },
+            'green+orange+white': { color: '#F0E68C', name: 'うすみどりオレンジ', object: '🟫' },
+            'green+orange+black': { color: '#8B4513', name: 'こいみどりオレンジ', object: '☕' },
+            'red+yellow+orange': { color: '#FF4500', name: 'あつオレンジ', object: '🔥' },
+            'red+blue+orange': { color: '#CD853F', name: 'あおあかオレンジ', object: '🟫' },
+            'yellow+blue+orange': { color: '#DAA520', name: 'きあおオレンジ', object: '🟫' },
+            'red+green+orange': { color: '#A0522D', name: 'あかみどりオレンジ', object: '🟤' },
+            'yellow+green+orange': { color: '#9ACD32', name: 'きみどりオレンジ', object: '🥬' },
+            'blue+green+orange': { color: '#6B8E23', name: 'あおみどりオレンジ', object: '🌲' },
+
+            // 3色の混合 - 紫を含むパターン
+            'red+purple+white': { color: '#FFCCCB', name: 'うすあかむらさき', object: '🌸' },
+            'red+purple+black': { color: '#8B008B', name: 'こいあかむらさき', object: '🍇' },
+            'yellow+purple+white': { color: '#E6E6FA', name: 'うすきむらさき', object: '💜' },
+            'yellow+purple+black': { color: '#4B0082', name: 'こいきむらさき', object: '🍇' },
+            'blue+purple+white': { color: '#E6E6FA', name: 'うすあおむらさき', object: '💜' },
+            'blue+purple+black': { color: '#2E2B5F', name: 'こいあおむらさき', object: '🍇' },
+            'green+purple+white': { color: '#DDA0DD', name: 'うすみどりむらさき', object: '💜' },
+            'green+purple+black': { color: '#4B0F4B', name: 'こいみどりむらさき', object: '🍆' },
+            'orange+purple+white': { color: '#FFE4E1', name: 'うすオレンジむらさき', object: '🍑' },
+            'orange+purple+black': { color: '#8B4789', name: 'こいオレンジむらさき', object: '🍇' },
+
+            // 4色の混合
+            'red+yellow+blue+white': { color: '#D2B48C', name: 'ベージュ', object: '🟫' },
+            'red+yellow+blue+black': { color: '#4B4B4B', name: 'こいはいいろ', object: '🪨' },
+            'red+yellow+green+white': { color: '#F0E68C', name: 'うすきちゃ', object: '🟫' },
+            'red+yellow+green+black': { color: '#556B2F', name: 'こいきちゃ', object: '🌲' },
+            'red+blue+green+white': { color: '#D3D3D3', name: 'うすはいいろ', object: '☁️' },
+            'red+blue+green+black': { color: '#2F4F2F', name: 'こいはいいろ', object: '🪨' },
+            'yellow+blue+green+white': { color: '#F0FFF0', name: 'うすみどりいろ', object: '🌱' },
+            'yellow+blue+green+black': { color: '#556B2F', name: 'こいみどりいろ', object: '🌲' },
+            'red+yellow+orange+white': { color: '#FFEFD5', name: 'うすあかオレンジ', object: '🍑' },
+            'red+yellow+orange+black': { color: '#CD853F', name: 'こいあかオレンジ', object: '🍊' },
+            'red+blue+orange+white': { color: '#F5DEB3', name: 'うすあかあおオレンジ', object: '🟫' },
+            'red+blue+orange+black': { color: '#8B4513', name: 'こいあかあおオレンジ', object: '☕' },
+            'yellow+blue+orange+white': { color: '#F5F5DC', name: 'うすきあおオレンジ', object: '🟫' },
+            'yellow+blue+orange+black': { color: '#6B8E23', name: 'こいきあおオレンジ', object: '🥬' },
+            'red+green+orange+white': { color: '#F0E68C', name: 'うすあかみどりオレンジ', object: '🟫' },
+            'red+green+orange+black': { color: '#8B4513', name: 'こいあかみどりオレンジ', object: '☕' },
+            'yellow+green+orange+white': { color: '#F5FFFA', name: 'うすきみどりオレンジ', object: '🌱' },
+            'yellow+green+orange+black': { color: '#6B8E23', name: 'こいきみどりオレンジ', object: '🥬' },
+            'blue+green+orange+white': { color: '#F0FFF0', name: 'うすあおみどりオレンジ', object: '🌱' },
+            'blue+green+orange+black': { color: '#2F4F2F', name: 'こいあおみどりオレンジ', object: '🌲' },
+            'red+yellow+purple+white': { color: '#F5DEB3', name: 'うすあかきむらさき', object: '🍑' },
+            'red+yellow+purple+black': { color: '#8B4513', name: 'こいあかきむらさき', object: '☕' },
+            'red+blue+purple+white': { color: '#E6E6FA', name: 'うすあかあおむらさき', object: '💜' },
+            'red+blue+purple+black': { color: '#2B124C', name: 'こいあかあおむらさき', object: '🍆' },
+            'yellow+blue+purple+white': { color: '#DDA0DD', name: 'うすきあおむらさき', object: '💜' },
+            'yellow+blue+purple+black': { color: '#4B0082', name: 'こいきあおむらさき', object: '🍇' },
+            'red+green+purple+white': { color: '#DDA0DD', name: 'うすあかみどりむらさき', object: '💜' },
+            'red+green+purple+black': { color: '#2F4F2F', name: 'こいあかみどりむらさき', object: '🌲' },
+            'yellow+green+purple+white': { color: '#F0FFF0', name: 'うすきみどりむらさき', object: '🌱' },
+            'yellow+green+purple+black': { color: '#556B2F', name: 'こいきみどりむらさき', object: '🌲' },
+            'blue+green+purple+white': { color: '#F0FFFF', name: 'うすあおみどりむらさき', object: '💙' },
+            'blue+green+purple+black': { color: '#2F4F4F', name: 'こいあおみどりむらさき', object: '🌊' },
+            'red+orange+purple+white': { color: '#FFE4E1', name: 'うすあかオレンジむらさき', object: '🍑' },
+            'red+orange+purple+black': { color: '#8B2635', name: 'こいあかオレンジむらさき', object: '🍇' },
+            'yellow+orange+purple+white': { color: '#FFF8DC', name: 'うすきオレンジむらさき', object: '🍮' },
+            'yellow+orange+purple+black': { color: '#8B4789', name: 'こいきオレンジむらさき', object: '🍇' },
+            'blue+orange+purple+white': { color: '#E6E6FA', name: 'うすあおオレンジむらさき', object: '💜' },
+            'blue+orange+purple+black': { color: '#2E2B5F', name: 'こいあおオレンジむらさき', object: '🍇' },
+            'green+orange+purple+white': { color: '#DDA0DD', name: 'うすみどりオレンジむらさき', object: '💜' },
+            'green+orange+purple+black': { color: '#4B0F4B', name: 'こいみどりオレンジむらさき', object: '🍆' },
+
+            // 5色以上の混合
+            'red+yellow+blue+green+white': { color: '#F5F5DC', name: 'うすごちゃまぜ', object: '☁️' },
+            'red+yellow+blue+green+black': { color: '#2F4F2F', name: 'こいごちゃまぜ', object: '🪨' },
+            'red+yellow+blue+orange+white': { color: '#F5DEB3', name: 'うすにじまぜ', object: '🟫' },
+            'red+yellow+blue+orange+black': { color: '#8B4513', name: 'こいにじまぜ', object: '☕' },
+            'red+yellow+blue+purple+white': { color: '#D2B48C', name: 'うすべーじゅ', object: '🟫' },
+            'red+yellow+blue+purple+black': { color: '#4B4B4B', name: 'こいべーじゅ', object: '🪨' },
+            'red+yellow+green+orange+white': { color: '#F0E68C', name: 'うすあかき', object: '🟫' },
+            'red+yellow+green+orange+black': { color: '#6B8E23', name: 'こいあかき', object: '🥬' },
+            'red+yellow+green+purple+white': { color: '#F0E68C', name: 'うすあかきみどり', object: '🟫' },
+            'red+yellow+green+purple+black': { color: '#556B2F', name: 'こいあかきみどり', object: '🌲' },
+            'red+blue+green+orange+white': { color: '#F5F5DC', name: 'うすあかあおみどり', object: '☁️' },
+            'red+blue+green+orange+black': { color: '#2F4F2F', name: 'こいあかあおみどり', object: '🌲' },
+            'red+blue+green+purple+white': { color: '#D3D3D3', name: 'うすあかあおむらさき', object: '☁️' },
+            'red+blue+green+purple+black': { color: '#2F4F2F', name: 'こいあかあおむらさき', object: '🪨' },
+            'yellow+blue+green+orange+white': { color: '#F5FFFA', name: 'うすきあおみどり', object: '🌱' },
+            'yellow+blue+green+orange+black': { color: '#556B2F', name: 'こいきあおみどり', object: '🌲' },
+            'yellow+blue+green+purple+white': { color: '#F0FFF0', name: 'うすきあおむらさき', object: '🌱' },
+            'yellow+blue+green+purple+black': { color: '#4B0082', name: 'こいきあおむらさき', object: '🍇' },
+            'red+yellow+orange+purple+white': { color: '#F5DEB3', name: 'うすあかオレンジ', object: '🟫' },
+            'red+yellow+orange+purple+black': { color: '#8B4513', name: 'こいあかオレンジ', object: '☕' },
+            'red+blue+orange+purple+white': { color: '#F5DEB3', name: 'うすあかあおオレンジ', object: '🟫' },
+            'red+blue+orange+purple+black': { color: '#2B124C', name: 'こいあかあおオレンジ', object: '🍆' },
+            'yellow+blue+orange+purple+white': { color: '#E6E6FA', name: 'うすきあおオレンジ', object: '💜' },
+            'yellow+blue+orange+purple+black': { color: '#4B0082', name: 'こいきあおオレンジ', object: '🍇' },
+            'red+green+orange+purple+white': { color: '#F0E68C', name: 'うすあかみどりオレンジ', object: '🟫' },
+            'red+green+orange+purple+black': { color: '#4B0F4B', name: 'こいあかみどりオレンジ', object: '🍆' },
+            'yellow+green+orange+purple+white': { color: '#F5FFFA', name: 'うすきみどりオレンジ', object: '🌱' },
+            'yellow+green+orange+purple+black': { color: '#556B2F', name: 'こいきみどりオレンジ', object: '🌲' },
+            'blue+green+orange+purple+white': { color: '#F0FFF0', name: 'うすあおみどりオレンジ', object: '🌱' },
+            'blue+green+orange+purple+black': { color: '#2F4F2F', name: 'こいあおみどりオレンジ', object: '🌲' },
+
+            // 6色の混合
+            'red+yellow+blue+green+orange+white': { color: '#F0E68C', name: 'うすぜんぶまぜ', object: '🟫' },
+            'red+yellow+blue+green+orange+black': { color: '#556B2F', name: 'こいぜんぶまぜ', object: '🌲' },
+            'red+yellow+blue+green+purple+white': { color: '#F5F5DC', name: 'うすいろいろまぜ', object: '☁️' },
+            'red+yellow+blue+green+purple+black': { color: '#2F4F2F', name: 'こいいろいろまぜ', object: '🪨' },
+            'red+yellow+blue+orange+purple+white': { color: '#D2B48C', name: 'うすにじいろまぜ', object: '🟫' },
+            'red+yellow+blue+orange+purple+black': { color: '#4B4B4B', name: 'こいにじいろまぜ', object: '🪨' },
+            'red+yellow+green+orange+purple+white': { color: '#F0E68C', name: 'うすあかまぜ', object: '🟫' },
+            'red+yellow+green+orange+purple+black': { color: '#556B2F', name: 'こいあかまぜ', object: '🌲' },
+            'red+blue+green+orange+purple+white': { color: '#D3D3D3', name: 'うすあおまぜ', object: '☁️' },
+            'red+blue+green+orange+purple+black': { color: '#2F4F2F', name: 'こいあおまぜ', object: '🪨' },
+            'yellow+blue+green+orange+purple+white': { color: '#F0FFF0', name: 'うすきまぜ', object: '🌱' },
+            'yellow+blue+green+orange+purple+black': { color: '#4B0082', name: 'こいきまぜ', object: '🍇' }
         };
 
         function selectColor(colorName, hexColor, displayText) {
@@ -231,18 +406,46 @@
         function mixColors() {
             if (selectedColors.length < 1) return;
             const names = selectedColors.map(c => c.name).sort();
-            const key = names.join('+');
+            let key = names.join('+');
             let result = colorResults[key];
+            
+            // すべての可能な順番を試す（2色の場合）
+            if (!result && names.length === 2) {
+                const reverseKey = names[1] + '+' + names[0];
+                result = colorResults[reverseKey];
+            }
+            
+            // 3色以上の場合、よくある順番パターンも試す
+            if (!result && names.length >= 3) {
+                // いくつかの一般的な順番パターンを試す
+                const patterns = [
+                    names.join('+'),
+                    [...names].reverse().join('+'),
+                    // アルファベット順以外の一般的なパターン
+                    names.sort((a,b) => {
+                        const order = ['red','yellow','blue','green','orange','purple','white','black','pink','brown','gray','lime','lightblue'];
+                        return order.indexOf(a) - order.indexOf(b);
+                    }).join('+')
+                ];
+                
+                for (const pattern of patterns) {
+                    if (colorResults[pattern]) {
+                        result = colorResults[pattern];
+                        break;
+                    }
+                }
+            }
+            
             if (!result) {
                 const avg = calculateAverageColor(selectedColors.map(c => c.hex));
-                if (selectedColors.length >= 4) result = { color: avg, name: 'ごちゃまぜいろ', object: 'ねんど' };
-                else result = { color: avg, name: 'まざったいろ', object: 'えのぐ' };
+                if (selectedColors.length >= 4) result = { color: avg, name: 'ごちゃまぜいろ', object: '🌫️' };
+                else result = { color: avg, name: 'まざったいろ', object: '🎨' };
             }
             const box = document.getElementById('resultColor');
             box.style.backgroundColor = result.color;
             box.style.color = (result.name.includes('しろ') || result.name.includes('うす')) ? '#333' : '#fff';
-            box.innerHTML = `<span>${result.object}</span><br><span>(${result.name})</span>`;
-            box.style.fontSize = '1.5em'; celebrate();
+            box.innerHTML = `${result.object}<br><span>${result.name}</span>`;
+            celebrate();
         }
         function calculateAverageColor(hexs) {
             let r=0,g=0,b=0;
@@ -268,7 +471,7 @@
             setTimeout(()=>c.classList.remove('active'),2000); }
         function clearAll(){ selectedColors=[]; document.querySelectorAll('.color-button').forEach(b=>b.classList.remove('selected'));
             document.getElementById('selectedDisplay').innerHTML=''; const box=document.getElementById('resultColor');
-            box.style.backgroundColor='#f0f0f0'; box.innerHTML='？'; box.style.color='#999'; box.style.fontSize='1.5em'; updateMixButton(); }
+            box.style.backgroundColor='#f0f0f0'; box.innerHTML='？'; box.style.color='#999'; updateMixButton(); }
     </script>
 </body>
 </html>
